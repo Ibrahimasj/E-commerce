@@ -1,0 +1,242 @@
+[
+  {
+    "id": "prod-1",
+    "name": "Smartwatch Pro Ultra 2 AMOLED",
+    "slug": "smartwatch-pro-ultra-2-amoled",
+    "category": "Gadget",
+    "price": 899000,
+    "originalPrice": 1299000,
+    "discount": 30,
+    "rating": 4.9,
+    "reviewsCount": 248,
+    "stock": 35,
+    "image": "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=800&q=80",
+      "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=800&q=80"
+    ],
+    "description": "Smartwatch generasi terbaru dengan layar sentuh AMOLED Always-On 1.96 inci. Dilengkapi sensor detak jantung 24/7, pemantau SpO2, GPS presisi tinggi, dan ketahanan air 5ATM.",
+    "specs": {
+      "Layar": "1.96 inch AMOLED Always-On (410x502)",
+      "Baterai": "Hingga 14 Hari Pemakaian",
+      "Konektivitas": "Bluetooth 5.3 + GPS Built-in",
+      "Waterproof": "5 ATM (Tahan Renang)",
+      "Sensor": "Heart Rate, SpO2, Sleep Monitor"
+    },
+    "badge": "Terlaris",
+    "featured": true
+  },
+  {
+    "id": "prod-2",
+    "name": "Wireless Noise Cancelling Headphone X1",
+    "slug": "wireless-noise-cancelling-headphone-x1",
+    "category": "Audio",
+    "price": 1450000,
+    "originalPrice": 1800000,
+    "discount": 19,
+    "rating": 4.8,
+    "reviewsCount": 184,
+    "stock": 20,
+    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80",
+      "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800&q=80"
+    ],
+    "description": "Headphone over-ear nirkabel dengan teknologi Active Noise Cancellation (ANC) adaptif. Suara bass bertenaga, vokal jernih, dan bantalan telinga busa memori yang sangat nyaman untuk penggunaan berjam-jam.",
+    "specs": {
+      "Driver": "40mm Bio-Cellulose Driver",
+      "Baterai": "45 Jam (ANC On), 60 Jam (ANC Off)",
+      "Fitur": "Hybrid Active Noise Cancelling, Mode Transparansi",
+      "Port": "USB Type-C Fast Charging",
+      "Mikrofon": "Quad Mic dengan AI Environmental Noise Cancellation"
+    },
+    "badge": "Pilihan Editor",
+    "featured": true
+  },
+  {
+    "id": "prod-3",
+    "name": "Mechanical Keyboard RGB Wireless 75%",
+    "slug": "mechanical-keyboard-rgb-wireless-75",
+    "category": "Elektronik",
+    "price": 675000,
+    "originalPrice": 850000,
+    "discount": 20,
+    "rating": 4.9,
+    "reviewsCount": 312,
+    "stock": 42,
+    "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&q=80",
+      "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=800&q=80"
+    ],
+    "description": "Keyboard mekanik layout 75% dengan 3 mode koneksi (2.4Ghz, Bluetooth, Type-C). Dilengkapi hot-swappable switch 5-pin, peredam suara multi-layer poron, dan pencahayaan RGB 16.8 juta warna.",
+    "specs": {
+      "Layout": "75% Compact (82 Keys) dengan Knob Volume",
+      "Switch": "Factory Pre-lubed Linear Gateron Yellow",
+      "Koneksi": "Tri-Mode (Wireless 2.4Ghz, BT 5.0, Kabel Type-C)",
+      "Keycaps": "PBT Dye-Sub OEM Profile",
+      "Baterai": "4000mAh Rechargeable"
+    },
+    "badge": "Terlaris",
+    "featured": true
+  },
+  {
+    "id": "prod-4",
+    "name": "Tas Ransel Laptop Waterproof Anti-Maling",
+    "slug": "tas-ransel-laptop-waterproof-anti-maling",
+    "category": "Fashion",
+    "price": 349000,
+    "originalPrice": 499000,
+    "discount": 30,
+    "rating": 4.7,
+    "reviewsCount": 156,
+    "stock": 50,
+    "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&q=80",
+      "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=800&q=80"
+    ],
+    "description": "Ransel modern perkotaan dengan bahan Oxford poliester tahan air dan anti gores. Kompartemen khusus laptop hingga 15.6 inci dengan busa pelindung tebal serta port pengisian daya USB eksternal.",
+    "specs": {
+      "Kapasitas": "22 Liter (Muat Laptop hingga 15.6 inch)",
+      "Bahan": "Water-Repellent High Density Oxford Fabric",
+      "Fitur": "Port USB Charger, Kunci TSA, Saku Rahasia Belakang",
+      "Dimensi": "44 x 30 x 14 cm",
+      "Berat": "850 gram"
+    },
+    "badge": "Promo",
+    "featured": false
+  },
+  {
+    "id": "prod-5",
+    "name": "Fast GaN Charger 65W 3-Port USB-C",
+    "slug": "fast-gan-charger-65w-3-port-usb-c",
+    "category": "Aksesoris",
+    "price": 239000,
+    "originalPrice": 320000,
+    "discount": 25,
+    "rating": 4.9,
+    "reviewsCount": 420,
+    "stock": 60,
+    "image": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=800&q=80",
+    "description": "Kepala charger berteknologi GaN V generasi terbaru berukuran 50% lebih ringkas namun mampu menghasilkan daya hingga 65W. Mendukung pengisian cepat laptop MacBook, iPad, iPhone, dan Android.",
+    "specs": {
+      "Output": "Max 65W Power Delivery 3.0 & Quick Charge 4+",
+      "Port": "2x USB-C + 1x USB-A",
+      "Proteksi": "Overheat, Overcharge, Short Circuit Protection",
+      "Kompatibilitas": "MacBook, Dell, iPhone, Samsung, Xiaomi"
+    },
+    "badge": "Terlaris",
+    "featured": true
+  },
+  {
+    "id": "prod-6",
+    "name": "TWS Earbuds Hi-Fi Bass Low Latency",
+    "slug": "tws-earbuds-hi-fi-bass-low-latency",
+    "category": "Audio",
+    "price": 299000,
+    "originalPrice": 450000,
+    "discount": 33,
+    "rating": 4.8,
+    "reviewsCount": 380,
+    "stock": 45,
+    "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&q=80",
+    "description": "TWS berdesain in-ear ergonomis dengan driver komposit 13mm untuk dentuman bass yang bertenaga. Dilengkapi game mode ultra-low latency 38ms dan daya tahan total baterai hingga 32 jam.",
+    "specs": {
+      "Bluetooth": "Versi 5.4 Jangkauan 15 Meter",
+      "Baterai": "6 Jam Earbuds + 26 Jam Charging Case",
+      "Latensi": "38ms Ultra Low Latency Gaming Mode",
+      "Sertifikasi": "IPX5 Tahan Keringat & Percikan Air"
+    },
+    "badge": "Diskon Besar",
+    "featured": false
+  },
+  {
+    "id": "prod-7",
+    "name": "Mouse Gaming Ergonomis 26K DPI Wireless",
+    "slug": "mouse-gaming-ergonomis-26k-dpi-wireless",
+    "category": "Elektronik",
+    "price": 480000,
+    "originalPrice": 620000,
+    "discount": 22,
+    "rating": 4.8,
+    "reviewsCount": 94,
+    "stock": 25,
+    "image": "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=800&q=80",
+    "description": "Mouse gaming ultralight seberat 58 gram dengan sensor optik PAW3395 kelas kompetitif 26.000 DPI. Polling rate 1000Hz (dapat di-upgrade ke 4KHz) dan tombol PTFE ultra licin.",
+    "specs": {
+      "Sensor": "PixArt PAW3395 (Hingga 26.000 DPI, 650 IPS)",
+      "Berat": "Ultra-lightweight 58 Gram",
+      "Koneksi": "2.4Ghz Wireless, BT 5.2, Type-C",
+      "Baterai": "Hingga 80 Jam Pemakaian Sekali Cas"
+    },
+    "badge": "Gaming",
+    "featured": false
+  },
+  {
+    "id": "prod-8",
+    "name": "Jaket Windbreaker Outdoor Waterproof",
+    "slug": "jaket-windbreaker-outdoor-waterproof",
+    "category": "Fashion",
+    "price": 275000,
+    "originalPrice": 399000,
+    "discount": 31,
+    "rating": 4.7,
+    "reviewsCount": 112,
+    "stock": 38,
+    "image": "https://images.unsplash.com/photo-1548883354-7622d03aca27?w=800&q=80",
+    "description": "Jaket pelindung angin dan hujan gerimis dengan lapisan membran breathable. Sangat cocok untuk aktivitas luar ruangan, berkendara motor harian, maupun traveling di cuaca sejuk.",
+    "specs": {
+      "Bahan": "Taslan Balon Waterproof & Windproof 100%",
+      "Furing": "Jaring Breathable Adem",
+      "Fitur": "Hoodie Lepas Pasang, Saku Dalam & Luar Beresleting YKK",
+      "Ukuran": "Tersedia M, L, XL, XXL"
+    },
+    "badge": "Terbaru",
+    "featured": false
+  },
+  {
+    "id": "prod-9",
+    "name": "Powerbank 20000mAh Magnetic Magsafe",
+    "slug": "powerbank-20000mah-magnetic-magsafe",
+    "category": "Aksesoris",
+    "price": 385000,
+    "originalPrice": 520000,
+    "discount": 26,
+    "rating": 4.9,
+    "reviewsCount": 210,
+    "stock": 28,
+    "image": "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&q=80",
+    "description": "Powerbank berdaya besar 20.000mAh dengan fitur tempel magnetik kuat (MagSafe compatible). Dilengkapi kickstand terintegrasi untuk menonton video sambil mengisi daya nirkabel.",
+    "specs": {
+      "Kapasitas": "20.000mAh / 3.85V (77Wh)",
+      "Wireless Output": "15W Max Fast Magnetic Charging",
+      "Wired Output": "22.5W USB-A & 20W PD USB-C",
+      "Display": "Digital LED Battery Percentage Indicator"
+    },
+    "badge": "Favorit",
+    "featured": true
+  },
+  {
+    "id": "prod-10",
+    "name": "Kacamata Polarized Photochromic UV400",
+    "slug": "kacamata-polarized-photochromic-uv400",
+    "category": "Fashion",
+    "price": 189000,
+    "originalPrice": 299000,
+    "discount": 36,
+    "rating": 4.6,
+    "reviewsCount": 88,
+    "stock": 65,
+    "image": "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=800&q=80",
+    "description": "Kacamata dengan lensa pintar photochromic yang otomatis menggelap saat terpapar sinar matahari terik dan menjadi bening saat di dalam ruangan. Lapisan polarized mereduksi silau berkendara.",
+    "specs": {
+      "Lensa": "TAC Polarized + Lensa Transisi Photochromic",
+      "Frame": "Alumunium Magnesium Alloy Ringan & Kokoh",
+      "Perlindungan": "100% Perlindungan UV400 Sinar UVA & UVB",
+      "Kelengkapan": "Hardcase Kulit, Lap Microfiber, Kartu Tes Polarized"
+    },
+    "badge": "Promo",
+    "featured": false
+  }
+]

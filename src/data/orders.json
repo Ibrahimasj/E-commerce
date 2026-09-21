@@ -1,0 +1,138 @@
+[
+  {
+    "id": "ord-1790011337152",
+    "invoiceNumber": "INV-20260922-3823",
+    "createdAt": "2026-09-21T17:22:17.152Z",
+    "customer": {
+      "fullName": "Ibrahim Ahsan Suryajati",
+      "phone": "092699",
+      "email": "akung4131@gmail.com",
+      "address": "Jl.Ababil 1 blok D7 no.3, Kemiling, Beringin Raya",
+      "city": "Jakarta Selatan",
+      "postalCode": "12340",
+      "notes": ""
+    },
+    "items": [
+      {
+        "product": {
+          "id": "prod-1",
+          "name": "Smartwatch Pro Ultra 2 AMOLED",
+          "slug": "smartwatch-pro-ultra-2-amoled",
+          "category": "Gadget",
+          "price": 899000,
+          "originalPrice": 1299000,
+          "discount": 30,
+          "rating": 4.9,
+          "reviewsCount": 248,
+          "stock": 35,
+          "image": "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=800&q=80",
+          "images": [
+            "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=800&q=80",
+            "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=800&q=80"
+          ],
+          "description": "Smartwatch generasi terbaru dengan layar sentuh AMOLED Always-On 1.96 inci. Dilengkapi sensor detak jantung 24/7, pemantau SpO2, GPS presisi tinggi, dan ketahanan air 5ATM.",
+          "specs": {
+            "Layar": "1.96 inch AMOLED Always-On (410x502)",
+            "Baterai": "Hingga 14 Hari Pemakaian",
+            "Konektivitas": "Bluetooth 5.3 + GPS Built-in",
+            "Waterproof": "5 ATM (Tahan Renang)",
+            "Sensor": "Heart Rate, SpO2, Sleep Monitor"
+          },
+          "badge": "Terlaris",
+          "featured": true
+        },
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "id": "ship-jne-reg",
+      "name": "JNE Reguler",
+      "courier": "JNE",
+      "service": "Reguler",
+      "etd": "2-3 Hari Kerja",
+      "cost": 18000
+    },
+    "payment": {
+      "method": {
+        "id": "pay-qris",
+        "name": "QRIS (GoPay, OVO, Dana, ShopeePay, BCA)",
+        "type": "qris",
+        "provider": "QRIS Bersama",
+        "instructions": [
+          "Buka aplikasi e-wallet atau mobile banking favorit Anda.",
+          "Pilih menu Scan / Bayar QRIS.",
+          "Arahkan kamera ke kode QR yang ditampilkan pada layar.",
+          "Periksa nominal pembayaran dan konfirmasi dengan PIN Anda.",
+          "Status pembayaran akan terverifikasi secara otomatis."
+        ]
+      },
+      "status": "pending"
+    },
+    "pricing": {
+      "subtotal": 899000,
+      "shippingCost": 18000,
+      "discountAmount": 0,
+      "total": 917000
+    },
+    "orderStatus": "menunggu_pembayaran"
+  },
+  {
+    "id": "ord-1790011152148",
+    "invoiceNumber": "INV-20260922-1386",
+    "createdAt": "2026-09-21T17:19:12.148Z",
+    "customer": {
+      "fullName": "Budi Santoso",
+      "phone": "081234567890",
+      "email": "budi@example.com",
+      "address": "Jl. Merdeka No. 10, RT 01/02",
+      "city": "Jakarta Selatan",
+      "postalCode": "12340",
+      "notes": "Titip di satpam"
+    },
+    "items": [
+      {
+        "product": {
+          "id": "prod-1",
+          "name": "Smartwatch Pro Ultra 2 AMOLED",
+          "slug": "smartwatch-pro-ultra-2-amoled",
+          "category": "Gadget",
+          "price": 899000,
+          "stock": 35,
+          "image": "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=800&q=80",
+          "rating": 4.9,
+          "reviewsCount": 248,
+          "description": "Smartwatch generasi terbaru"
+        },
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "id": "ship-jne-reg",
+      "name": "JNE Reguler",
+      "courier": "JNE",
+      "service": "Reguler",
+      "etd": "2-3 Hari Kerja",
+      "cost": 18000
+    },
+    "payment": {
+      "method": {
+        "id": "pay-qris",
+        "name": "QRIS",
+        "type": "qris",
+        "provider": "QRIS Bersama",
+        "instructions": [
+          "Scan QR"
+        ]
+      },
+      "status": "paid",
+      "paidAt": "2026-09-21T17:35:15.272Z"
+    },
+    "pricing": {
+      "subtotal": 899000,
+      "shippingCost": 18000,
+      "discountAmount": 0,
+      "total": 917000
+    },
+    "orderStatus": "dikirim"
+  }
+]
