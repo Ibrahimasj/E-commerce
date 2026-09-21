@@ -1,5 +1,83 @@
 [
   {
+    "id": "ord-1790015867697",
+    "invoiceNumber": "INV-20260922-1388",
+    "createdAt": "2026-09-21T18:37:47.697Z",
+    "customer": {
+      "userId": "usr-1790014802935",
+      "fullName": "komat",
+      "phone": "085876543012",
+      "email": "komat67@gmail.com",
+      "address": "jl.tirta persada, Blok B7 no.4",
+      "city": "Jakarta Selatan",
+      "postalCode": "12340",
+      "notes": ""
+    },
+    "items": [
+      {
+        "product": {
+          "id": "prod-2",
+          "name": "Wireless Noise Cancelling Headphone X1",
+          "slug": "wireless-noise-cancelling-headphone-x1",
+          "category": "Audio",
+          "price": 1450000,
+          "originalPrice": 1800000,
+          "discount": 19,
+          "rating": 4.8,
+          "reviewsCount": 184,
+          "stock": 20,
+          "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80",
+          "images": [
+            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80",
+            "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800&q=80"
+          ],
+          "description": "Headphone over-ear nirkabel dengan teknologi Active Noise Cancellation (ANC) adaptif. Suara bass bertenaga, vokal jernih, dan bantalan telinga busa memori yang sangat nyaman untuk penggunaan berjam-jam.",
+          "specs": {
+            "Driver": "40mm Bio-Cellulose Driver",
+            "Baterai": "45 Jam (ANC On), 60 Jam (ANC Off)",
+            "Fitur": "Hybrid Active Noise Cancelling, Mode Transparansi",
+            "Port": "USB Type-C Fast Charging",
+            "Mikrofon": "Quad Mic dengan AI Environmental Noise Cancellation"
+          },
+          "badge": "Pilihan Editor",
+          "featured": true
+        },
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "id": "ship-jne-reg",
+      "name": "JNE Reguler",
+      "courier": "JNE",
+      "service": "Reguler",
+      "etd": "2-3 Hari Kerja",
+      "cost": 18000
+    },
+    "payment": {
+      "method": {
+        "id": "pay-qris",
+        "name": "QRIS (GoPay, OVO, Dana, ShopeePay, BCA)",
+        "type": "qris",
+        "provider": "QRIS Bersama",
+        "instructions": [
+          "Buka aplikasi e-wallet atau mobile banking favorit Anda.",
+          "Pilih menu Scan / Bayar QRIS.",
+          "Arahkan kamera ke kode QR yang ditampilkan pada layar.",
+          "Periksa nominal pembayaran dan konfirmasi dengan PIN Anda.",
+          "Status pembayaran akan terverifikasi secara otomatis."
+        ]
+      },
+      "status": "pending"
+    },
+    "pricing": {
+      "subtotal": 1450000,
+      "shippingCost": 18000,
+      "discountAmount": 0,
+      "total": 1468000
+    },
+    "orderStatus": "menunggu_pembayaran"
+  },
+  {
     "id": "ord-1790013728342",
     "invoiceNumber": "INV-20260922-5087",
     "createdAt": "2026-09-21T18:02:08.343Z",

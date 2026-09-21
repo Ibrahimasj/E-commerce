@@ -19,6 +19,7 @@ import {
   Layers,
   LogOut,
   ShieldCheck,
+  RefreshCw,
 } from 'lucide-react';
 import { Order, Product } from '@/types';
 import { formatRupiah, formatDateIndo } from '@/lib/utils';
@@ -41,6 +42,41 @@ export default function AdminDashboardClient({
   const [orders, setOrders] = useState<Order[]>(initialOrders);
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastUpdatedTime, setLastUpdatedTime] = useState<string>('');
+
+  const fetchLatestData = async () => {
+    setIsRefreshing(true);
+    try {
+      const [resOrders, resProducts] = await Promise.all([
+        fetch('/api/orders?t=' + Date.now(), { cache: 'no-store' }),
+        fetch('/api/products?t=' + Date.now(), { cache: 'no-store' }),
+      ]);
+      const jsonOrders = await resOrders.json();
+      const jsonProducts = await resProducts.json();
+      if (jsonOrders.success && Array.isArray(jsonOrders.data)) {
+        setOrders(jsonOrders.data);
+      }
+      if (jsonProducts.success && Array.isArray(jsonProducts.data)) {
+        setProducts(jsonProducts.data);
+      }
+      const now = new Date();
+      setLastUpdatedTime(
+        now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+      );
+    } catch (e) {
+      console.error('Failed to refresh admin data:', e);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  // Poll latest data every 5 seconds so newly placed orders show up automatically
+  useEffect(() => {
+    fetchLatestData();
+    const interval = setInterval(fetchLatestData, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Check and enforce Admin Access
   useEffect(() => {
@@ -190,7 +226,22 @@ export default function AdminDashboardClient({
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={fetchLatestData}
+            disabled={isRefreshing}
+            className="inline-flex items-center gap-2 px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl border border-slate-200 transition-all active:scale-95"
+            title="Segarkan data pesanan terbaru"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-emerald-600' : ''}`} />
+            <span>{isRefreshing ? 'Menyinkron...' : 'Segarkan Data'}</span>
+            {lastUpdatedTime && (
+              <span className="hidden sm:inline text-[10px] text-slate-400 font-normal">
+                ({lastUpdatedTime})
+              </span>
+            )}
+          </button>
+
           <button
             onClick={() => setShowAddProductModal(true)}
             className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-600/20 transition-all active:scale-95"

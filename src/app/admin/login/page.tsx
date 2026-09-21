@@ -71,9 +71,19 @@ export default function AdminLoginPage() {
         </div>
 
         {errorMsg && (
-          <div className="mb-5 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 flex-shrink-0" />
-            <span>{errorMsg}</span>
+          <div className="mb-5 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex flex-col gap-2">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              <span>{errorMsg}</span>
+            </div>
+            {errorMsg.includes('Pelanggan') && (
+              <Link
+                href="/login"
+                className="self-start inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-bold text-[11px] hover:bg-emerald-400 transition-colors"
+              >
+                <span>Buka Login Pelanggan &rarr;</span>
+              </Link>
+            )}
           </div>
         )}
 
@@ -104,7 +114,7 @@ export default function AdminLoginPage() {
             </label>
             <div className="relative">
               <input
-                type="email"
+                type="text"
                 required
                 placeholder="admin@nusamart.com"
                 value={email}

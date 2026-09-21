@@ -16,15 +16,22 @@ export async function POST(request: NextRequest) {
     const user = await findUserByEmail(email);
     if (!user) {
       return NextResponse.json(
-        { success: false, message: 'Email atau password tidak sesuai.' },
+        {
+          success: false,
+          message:
+            'Akun belum terdaftar. Periksa kembali email, username, atau nomor HP Anda, atau silakan daftar akun baru.',
+        },
         { status: 401 }
       );
     }
 
-    // In this local database demo, we compare passwords directly
+    // Direct password match for local demo
     if (user.passwordHash !== password) {
       return NextResponse.json(
-        { success: false, message: 'Email atau password tidak sesuai.' },
+        {
+          success: false,
+          message: 'Password yang Anda masukkan tidak sesuai. Silakan coba lagi.',
+        },
         { status: 401 }
       );
     }
@@ -35,7 +42,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
           {
             success: false,
-            message: 'Akses ditolak. Akun ini tidak memiliki izin sebagai Administrator.',
+            message: `Akses ditolak. Akun "${user.name}" (${user.email}) terdaftar sebagai Pelanggan, bukan Pengelola Toko. Silakan masuk melalui Halaman Login Pelanggan.`,
+            isCustomerRedirect: true,
           },
           { status: 403 }
         );

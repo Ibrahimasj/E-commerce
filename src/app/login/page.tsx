@@ -97,13 +97,13 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1.5">
-              Alamat Email
+              Email / Nama Akun / Nomor WhatsApp
             </label>
             <div className="relative">
               <input
-                type="email"
+                type="text"
                 required
-                placeholder="nama@email.com"
+                placeholder="Contoh: nama@email.com atau nama akun"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none"
@@ -140,11 +140,19 @@ export default function LoginPage() {
         </form>
 
         {/* Footer info */}
-        <div className="mt-6 pt-5 border-t border-slate-100 text-center text-xs text-slate-500">
-          Belum memiliki akun?{' '}
-          <Link href="/register" className="font-bold text-emerald-600 hover:underline">
-            Daftar Akun Baru
-          </Link>
+        <div className="mt-6 pt-5 border-t border-slate-100 text-center space-y-2 text-xs text-slate-500">
+          <div>
+            Belum memiliki akun?{' '}
+            <Link href="/register" className="font-bold text-emerald-600 hover:underline">
+              Daftar Akun Baru
+            </Link>
+          </div>
+          <div className="text-[11px] text-slate-400">
+            Pengelola toko?{' '}
+            <Link href="/admin/login" className="font-semibold text-slate-600 hover:text-emerald-600 hover:underline">
+              Masuk ke Portal Admin Toko &rarr;
+            </Link>
+          </div>
         </div>
       </div>
     </div>

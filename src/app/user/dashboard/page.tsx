@@ -37,16 +37,21 @@ export default function UserDashboardPage() {
       return;
     }
 
-    if (user?.email) {
-      fetchUserOrders(user.email, user.id);
+    if (user?.email || user?.id || user?.name) {
+      fetchUserOrders(user.email || '', user.id || '', user.phone || '', user.name || '');
     }
   }, [user, isLoading, router]);
 
-  const fetchUserOrders = async (email: string, userId: string) => {
+  const fetchUserOrders = async (
+    email: string,
+    userId: string,
+    phone: string,
+    name: string
+  ) => {
     setLoadingOrders(true);
     try {
       const res = await fetch(
-        `/api/user/orders?email=${encodeURIComponent(email)}&userId=${encodeURIComponent(userId)}`
+        `/api/user/orders?email=${encodeURIComponent(email)}&userId=${encodeURIComponent(userId)}&phone=${encodeURIComponent(phone)}&name=${encodeURIComponent(name)}`
       );
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) {

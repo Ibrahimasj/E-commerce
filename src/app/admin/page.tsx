@@ -2,6 +2,8 @@ import React from 'react';
 import { getOrders, getProducts } from '@/lib/db';
 import AdminDashboardClient from './AdminDashboardClient';
 
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
 export const revalidate = 0;
 
 export default async function AdminPage() {

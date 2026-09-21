@@ -38,10 +38,34 @@ export async function getUsers(): Promise<StoredUser[]> {
   }
 }
 
-export async function findUserByEmail(email: string): Promise<StoredUser | null> {
+export async function findUserByIdentifier(
+  identifier: string
+): Promise<StoredUser | null> {
   const users = await getUsers();
-  const search = email.trim().toLowerCase();
-  return users.find((u) => u.email.toLowerCase() === search) || null;
+  const search = identifier.trim().toLowerCase();
+  const cleanPhone = identifier.replace(/[^0-9]/g, '');
+
+  return (
+    users.find((u) => {
+      // 1. Match Email
+      if (u.email && u.email.toLowerCase() === search) return true;
+      // 2. Match Name (case-insensitive)
+      if (u.name && u.name.trim().toLowerCase() === search) return true;
+      // 3. Match Phone number if at least 6 digits
+      if (
+        cleanPhone.length >= 6 &&
+        u.phone &&
+        u.phone.replace(/[^0-9]/g, '') === cleanPhone
+      ) {
+        return true;
+      }
+      return false;
+    }) || null
+  );
+}
+
+export async function findUserByEmail(email: string): Promise<StoredUser | null> {
+  return findUserByIdentifier(email);
 }
 
 export async function findUserById(id: string): Promise<StoredUser | null> {

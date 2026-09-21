@@ -4,6 +4,9 @@ import { generateInvoiceNumber } from '@/lib/utils';
 import { Order } from '@/types';
 import { PAYMENT_METHODS, SHIPPING_OPTIONS } from '@/data/constants';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   try {
     const orders = await getOrders();
@@ -66,6 +69,7 @@ export async function POST(request: NextRequest) {
       invoiceNumber: generateInvoiceNumber(),
       createdAt: new Date().toISOString(),
       customer: {
+        userId: customer.userId || undefined,
         fullName: customer.fullName.trim(),
         phone: customer.phone.trim(),
         email: customer.email?.trim() || '',
