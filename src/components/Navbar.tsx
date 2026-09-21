@@ -3,13 +3,15 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ShoppingBag, Search, Store, ShieldCheck, Sparkles, Truck } from 'lucide-react';
+import { ShoppingBag, Search, Store, ShieldCheck, Sparkles, Truck, User } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 import { formatRupiah } from '@/lib/utils';
 
 export default function Navbar() {
   const router = useRouter();
   const { totalItems, subtotal, setIsDrawerOpen } = useCart();
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = (e: React.FormEvent) => {
@@ -81,13 +83,36 @@ export default function Navbar() {
               <span>Lacak Pesanan</span>
             </Link>
 
-            <Link
-              href="/admin"
-              className="hidden lg:inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-600 hover:text-emerald-600 hover:bg-slate-50 rounded-xl transition-colors"
-            >
-              <ShieldCheck className="w-4 h-4" />
-              <span>Kelola Toko (Admin)</span>
-            </Link>
+            {/* User Profile or Login Link */}
+            {user ? (
+              user.role === 'admin' ? (
+                <Link
+                  href="/admin"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors"
+                >
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <span>Admin Panel</span>
+                </Link>
+              ) : (
+                <Link
+                  href="/user/dashboard"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-700 hover:text-emerald-600 hover:bg-slate-50 rounded-xl transition-colors"
+                >
+                  <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[11px] font-bold">
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="hidden md:inline max-w-[100px] truncate">{user.name}</span>
+                </Link>
+              )
+            ) : (
+              <Link
+                href="/login"
+                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 hover:text-emerald-600 hover:bg-slate-50 rounded-xl transition-colors"
+              >
+                <User className="w-4 h-4" />
+                <span className="hidden sm:inline">Masuk / Daftar</span>
+              </Link>
+            )}
 
             {/* Cart Trigger Button */}
             <button

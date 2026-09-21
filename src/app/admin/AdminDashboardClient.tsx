@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Package,
   ShoppingBag,
@@ -16,10 +17,13 @@ import {
   Phone,
   Store,
   Layers,
+  LogOut,
+  ShieldCheck,
 } from 'lucide-react';
 import { Order, Product } from '@/types';
 import { formatRupiah, formatDateIndo } from '@/lib/utils';
 import { CATEGORIES } from '@/data/constants';
+import { useAuth } from '@/context/AuthContext';
 
 interface AdminDashboardClientProps {
   initialOrders: Order[];
@@ -30,10 +34,22 @@ export default function AdminDashboardClient({
   initialOrders,
   initialProducts,
 }: AdminDashboardClientProps) {
+  const router = useRouter();
+  const { user, logout, isLoading } = useAuth();
+
   const [activeTab, setActiveTab] = useState<'orders' | 'products'>('orders');
   const [orders, setOrders] = useState<Order[]>(initialOrders);
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
+
+  // Check and enforce Admin Access
+  useEffect(() => {
+    if (!isLoading) {
+      if (!user || user.role !== 'admin') {
+        router.push('/admin/login');
+      }
+    }
+  }, [user, isLoading, router]);
 
   // New product form state
   const [newProduct, setNewProduct] = useState({
@@ -146,6 +162,14 @@ export default function AdminDashboardClient({
     }
   };
 
+  if (isLoading || !user || user.role !== 'admin') {
+    return (
+      <div className="py-28 text-center text-slate-400">
+        Memverifikasi hak akses administrator...
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       {/* Header */}
@@ -154,6 +178,9 @@ export default function AdminDashboardClient({
           <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1">
             <Store className="w-4 h-4" />
             Panel Manajemen Toko
+            <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-[10px]">
+              Admin: {user.name}
+            </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
             Dashboard Pengelola Toko NusaMart
@@ -170,6 +197,17 @@ export default function AdminDashboardClient({
           >
             <Plus className="w-4 h-4" />
             <span>Tambah Produk Baru</span>
+          </button>
+
+          <button
+            onClick={() => {
+              logout();
+              router.push('/admin/login');
+            }}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-600 hover:text-rose-700 hover:bg-rose-50 border border-rose-200 transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Keluar Admin</span>
           </button>
         </div>
       </div>

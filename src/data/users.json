@@ -1,0 +1,47 @@
+[
+  {
+    "id": "usr-admin-1",
+    "name": "Admin Pengelola Toko",
+    "email": "admin@nusamart.com",
+    "passwordHash": "admin123",
+    "role": "admin",
+    "phone": "081122334455",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "usr-cust-1",
+    "name": "Budi Santoso",
+    "email": "budi@gmail.com",
+    "passwordHash": "user123",
+    "role": "customer",
+    "phone": "081234567890",
+    "address": "Jl. Sudirman No. 45, RT 02/03",
+    "city": "Jakarta Selatan",
+    "postalCode": "12340",
+    "createdAt": "2026-02-01T00:00:00.000Z"
+  },
+  {
+    "name": "Rina Wijaya",
+    "email": "testuser_1790014344116@example.com",
+    "passwordHash": "password123",
+    "role": "customer",
+    "phone": "085712345678",
+    "address": "Jl. Melati No. 10",
+    "city": "Bandung",
+    "postalCode": "40115",
+    "id": "usr-1790014344122",
+    "createdAt": "2026-09-21T18:12:24.122Z"
+  },
+  {
+    "name": "komat",
+    "email": "komat67@gmail.com",
+    "passwordHash": "komat672",
+    "role": "customer",
+    "phone": "085876543012",
+    "address": "jl.tirta persada, Blok B7 no.4",
+    "city": "Jakarta Selatan",
+    "postalCode": "12340",
+    "id": "usr-1790014802935",
+    "createdAt": "2026-09-21T18:20:02.935Z"
+  }
+]

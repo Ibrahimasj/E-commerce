@@ -42,6 +42,7 @@ export interface PaymentMethod {
 }
 
 export interface CustomerInfo {
+  userId?: string;
   fullName: string;
   phone: string;
   email: string;
@@ -73,4 +74,20 @@ export interface Order {
   };
   pricing: OrderPricing;
   orderStatus: 'menunggu_pembayaran' | 'diproses' | 'dikirim' | 'selesai';
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: 'customer' | 'admin';
+  phone?: string;
+  address?: string;
+  city?: string;
+  postalCode?: string;
+  createdAt: string;
+}
+
+export interface StoredUser extends User {
+  passwordHash: string;
 }

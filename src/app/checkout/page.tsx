@@ -20,6 +20,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 import { SHIPPING_OPTIONS, PAYMENT_METHODS } from '@/data/constants';
 import { formatRupiah } from '@/lib/utils';
 import { CustomerInfo, ShippingOption, PaymentMethod } from '@/types';
@@ -27,6 +28,7 @@ import { CustomerInfo, ShippingOption, PaymentMethod } from '@/types';
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, subtotal, discountAmount, voucherCode, clearCart } = useCart();
+  const { user } = useAuth();
 
   const [customer, setCustomer] = useState<CustomerInfo>({
     fullName: '',
@@ -53,6 +55,22 @@ export default function CheckoutPage() {
       router.push('/cart');
     }
   }, [items, router]);
+
+  // Autofill customer data if logged in
+  useEffect(() => {
+    if (user) {
+      setCustomer((prev) => ({
+        ...prev,
+        userId: user.id,
+        fullName: prev.fullName || user.name || '',
+        email: prev.email || user.email || '',
+        phone: prev.phone || user.phone || '',
+        address: prev.address || user.address || '',
+        city: prev.city || user.city || 'Jakarta Selatan',
+        postalCode: prev.postalCode || user.postalCode || '12340',
+      }));
+    }
+  }, [user]);
 
   const shippingCost = selectedShipping.cost;
   const grandTotal = Math.max(0, subtotal - discountAmount + shippingCost);
@@ -83,18 +101,21 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
 
     try {
+      const currentShipping = selectedShipping || SHIPPING_OPTIONS[0];
+      const currentPayment = selectedPayment || PAYMENT_METHODS[0];
+
       const payload = {
         customer,
         items,
-        shipping: selectedShipping,
+        shipping: currentShipping,
         payment: {
-          method: selectedPayment,
+          method: currentPayment,
           status: 'pending',
         },
         pricing: {
           subtotal,
-          shippingCost,
-          discountAmount,
+          shippingCost: currentShipping.cost || 0,
+          discountAmount: discountAmount || 0,
           voucherCode: voucherCode || undefined,
           total: grandTotal,
         },
@@ -109,27 +130,37 @@ export default function CheckoutPage() {
       const json = await res.json();
 
       if (!res.ok || !json.success) {
-        throw new Error(json.message || 'Gagal memproses pesanan.');
+        throw new Error(json.message || json.error || 'Gagal memproses pesanan.');
       }
 
       // Order success! Save order to local history, clear cart and redirect
       try {
-        const existing = JSON.parse(localStorage.getItem('nusamart_my_orders') || '[]');
-        existing.unshift({
-          id: json.data.id,
-          invoiceNumber: json.data.invoiceNumber,
-          createdAt: json.data.createdAt,
-          total: json.data.pricing.total,
+        const raw = localStorage.getItem('nusamart_my_orders');
+        let existingList: any[] = [];
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) existingList = parsed;
+          } catch {}
+        }
+        existingList.unshift({
+          id: json.data?.id,
+          invoiceNumber: json.data?.invoiceNumber,
+          createdAt: json.data?.createdAt || new Date().toISOString(),
+          total: json.data?.pricing?.total || grandTotal,
         });
-        localStorage.setItem('nusamart_my_orders', JSON.stringify(existing));
+        localStorage.setItem('nusamart_my_orders', JSON.stringify(existingList.slice(0, 30)));
       } catch (e) {
-        console.error(e);
+        console.warn('Could not save to localStorage:', e);
       }
 
       clearCart();
-      router.push(`/order-success/${json.data.id}`);
+      const targetId = json.data?.id || json.data?.invoiceNumber;
+      if (targetId) {
+        router.push(`/order-success/${targetId}`);
+      }
     } catch (err: any) {
-      console.error(err);
+      console.error('Checkout error:', err);
       setErrorMessage(err.message || 'Terjadi gangguan sistem saat menyimpan pesanan.');
       setIsSubmitting(false);
     }

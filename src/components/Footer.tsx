@@ -91,7 +91,8 @@ export default function Footer() {
               <li><Link href="/cart" className="hover:text-emerald-400 transition-colors">Keranjang Belanja</Link></li>
               <li><Link href="/checkout" className="hover:text-emerald-400 transition-colors">Formulir Checkout</Link></li>
               <li><Link href="/orders" className="hover:text-emerald-400 transition-colors">Lacak Status Pesanan</Link></li>
-              <li><Link href="/admin" className="hover:text-emerald-400 transition-colors">Kelola Pesanan (Admin)</Link></li>
+              <li><Link href="/user/dashboard" className="hover:text-emerald-400 transition-colors">Akun & Pesanan Saya</Link></li>
+              <li><Link href="/admin/login" className="text-slate-500 hover:text-emerald-400 transition-colors text-[11px]">Portal Pengelola Toko</Link></li>
               <li><span className="cursor-pointer hover:text-emerald-400 transition-colors">Syarat & Ketentuan</span></li>
               <li><span className="cursor-pointer hover:text-emerald-400 transition-colors">Kebijakan Privasi</span></li>
             </ul>

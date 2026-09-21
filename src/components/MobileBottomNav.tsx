@@ -3,12 +3,23 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Grid, ShoppingBag, Truck, ShieldCheck } from 'lucide-react';
+import { Home, Grid, ShoppingBag, Truck, User } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
   const { totalItems, setIsDrawerOpen } = useCart();
+  const { user } = useAuth();
+
+  const accountHref = user
+    ? user.role === 'admin'
+      ? '/admin'
+      : '/user/dashboard'
+    : '/login';
+
+  const isAccountActive =
+    pathname === '/user/dashboard' || pathname === '/login' || pathname === '/register';
 
   return (
     <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-2 shadow-lg">
@@ -56,17 +67,17 @@ export default function MobileBottomNav() {
           }`}
         >
           <Truck className="w-5 h-5" />
-          <span className="text-[10px]">Pesanan</span>
+          <span className="text-[10px]">Lacak</span>
         </Link>
 
         <Link
-          href="/admin"
+          href={accountHref}
           className={`flex flex-col items-center gap-1 p-1 transition-colors ${
-            pathname === '/admin' ? 'text-emerald-600 font-bold' : 'text-slate-500 hover:text-slate-900'
+            isAccountActive ? 'text-emerald-600 font-bold' : 'text-slate-500 hover:text-slate-900'
           }`}
         >
-          <ShieldCheck className="w-5 h-5" />
-          <span className="text-[10px]">Admin</span>
+          <User className="w-5 h-5" />
+          <span className="text-[10px]">{user ? 'Akun Saya' : 'Masuk'}</span>
         </Link>
       </div>
     </nav>
