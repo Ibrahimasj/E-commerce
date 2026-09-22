@@ -43,6 +43,7 @@ export default function RegisterPage() {
 
     const res = await register(formData);
     if (res.success) {
+      router.refresh();
       router.push('/user/dashboard');
     } else {
       setErrorMsg(res.message);

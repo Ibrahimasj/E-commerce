@@ -18,17 +18,19 @@ import {
   Building2,
   Banknote,
   Loader2,
+  ArrowRight,
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { SHIPPING_OPTIONS, PAYMENT_METHODS } from '@/data/constants';
 import { formatRupiah } from '@/lib/utils';
+import Script from 'next/script';
 import { CustomerInfo, ShippingOption, PaymentMethod } from '@/types';
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, subtotal, discountAmount, voucherCode, clearCart } = useCart();
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
 
   const [customer, setCustomer] = useState<CustomerInfo>({
     fullName: '',
@@ -85,6 +87,13 @@ export default function CheckoutPage() {
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
+
+    // Login Validation
+    if (!user) {
+      setErrorMessage('Anda harus login terlebih dahulu untuk menyelesaikan pesanan. Silakan masuk atau daftar akun.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
 
     // Form Validation
     if (!customer.fullName.trim() || !customer.phone.trim() || !customer.address.trim()) {
@@ -154,10 +163,55 @@ export default function CheckoutPage() {
         console.warn('Could not save to localStorage:', e);
       }
 
-      clearCart();
       const targetId = json.data?.id || json.data?.invoiceNumber;
+      const invoiceNumber = json.data?.invoiceNumber || targetId;
+
+      // Coba panggil Midtrans Snap Token dan tampilkan popup
+      try {
+        const tokenRes = await fetch('/api/payment/create-token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderId: targetId }),
+        });
+        const tokenJson = await tokenRes.json();
+
+        if (
+          tokenJson.success &&
+          tokenJson.token &&
+          typeof window !== 'undefined' &&
+          (window as any).snap
+        ) {
+          (window as any).snap.pay(tokenJson.token, {
+            onSuccess: (result: any) => {
+              console.log('Payment success:', result);
+              clearCart();
+              router.push(`/orders?invoice=${invoiceNumber}`);
+            },
+            onPending: (result: any) => {
+              console.log('Payment pending:', result);
+              clearCart();
+              router.push(`/orders?invoice=${invoiceNumber}`);
+            },
+            onError: (err: any) => {
+              console.error('Payment error:', err);
+              clearCart();
+              router.push(`/orders?invoice=${invoiceNumber}`);
+            },
+            onClose: () => {
+              console.log('Payment popup closed by user');
+              clearCart();
+              router.push(`/orders?invoice=${invoiceNumber}`);
+            },
+          });
+          return;
+        }
+      } catch (snapErr) {
+        console.warn('Snap payment popup could not be triggered:', snapErr);
+      }
+
+      clearCart();
       if (targetId) {
-        router.push(`/order-success/${targetId}`);
+        router.push(`/orders?invoice=${invoiceNumber}`);
       }
     } catch (err: any) {
       console.error('Checkout error:', err);
@@ -172,6 +226,12 @@ export default function CheckoutPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      {/* Midtrans Snap JS Script */}
+      <Script
+        src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
+        strategy="lazyOnload"
+      />
       {/* Header & Steps */}
       <div className="mb-8">
         <div className="flex items-center gap-2 text-xs text-slate-500 mb-2">
@@ -190,6 +250,27 @@ export default function CheckoutPage() {
           Lengkapi detail pengiriman dan pilih metode pembayaran favorit Anda.
         </p>
       </div>
+
+      {!isLoading && !user && (
+        <div className="mb-6 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-center gap-2.5">
+            <Lock className="w-5 h-5 text-amber-600 flex-shrink-0" />
+            <div>
+              <span className="font-bold">Perhatian: Anda belum masuk akun!</span>
+              <p className="text-xs text-amber-700 mt-0.5">
+                Silakan masuk terlebih dahulu agar pesanan terhubung ke riwayat akun Anda.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/login?redirect=/checkout"
+            className="self-start sm:self-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors flex items-center gap-1.5"
+          >
+            <span>Masuk Akun</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      )}
 
       {errorMessage && (
         <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs sm:text-sm flex items-start gap-2.5">

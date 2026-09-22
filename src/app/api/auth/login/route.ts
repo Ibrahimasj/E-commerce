@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { findUserByEmail, toSafeUser } from '@/lib/auth';
+import {
+  getUserByIdentifierWithProfile,
+  verifyPassword,
+  generateToken,
+  COOKIE_NAME,
+} from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,20 +18,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const user = await findUserByEmail(email);
-    if (!user) {
+    const result = await getUserByIdentifierWithProfile(email);
+    if (!result) {
       return NextResponse.json(
         {
           success: false,
           message:
-            'Akun belum terdaftar. Periksa kembali email, username, atau nomor HP Anda, atau silakan daftar akun baru.',
+            'Akun belum terdaftar. Periksa kembali email Anda atau silakan daftar akun baru.',
         },
         { status: 401 }
       );
     }
 
-    // Direct password match for local demo
-    if (user.passwordHash !== password) {
+    const { user, safeUser } = result;
+
+    const isMatch = await verifyPassword(password, user.password);
+    if (!isMatch) {
       return NextResponse.json(
         {
           success: false,
@@ -36,13 +43,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Role check if logging in via specific portal
-    if (requiredRole && user.role !== requiredRole) {
-      if (requiredRole === 'admin') {
+    // Validasi role jika login melalui portal khusus (Admin vs Pelanggan)
+    if (requiredRole && safeUser.role !== requiredRole.toLowerCase()) {
+      if (requiredRole.toLowerCase() === 'admin') {
         return NextResponse.json(
           {
             success: false,
-            message: `Akses ditolak. Akun "${user.name}" (${user.email}) terdaftar sebagai Pelanggan, bukan Pengelola Toko. Silakan masuk melalui Halaman Login Pelanggan.`,
+            message: `Akses ditolak. Akun "${user.name}" terdaftar sebagai Pelanggan, bukan Pengelola Toko. Silakan masuk melalui Halaman Login Pelanggan.`,
             isCustomerRedirect: true,
           },
           { status: 403 }
@@ -50,12 +57,28 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const safe = toSafeUser(user);
-    return NextResponse.json({
+    const token = generateToken({
+      id: safeUser.id,
+      email: safeUser.email,
+      name: safeUser.name,
+      role: safeUser.role,
+    });
+
+    const response = NextResponse.json({
       success: true,
       message: 'Berhasil masuk',
-      user: safe,
+      user: safeUser,
     });
+
+    response.cookies.set(COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7 hari
+      path: '/',
+    });
+
+    return response;
   } catch (error: any) {
     console.error('Login error:', error);
     return NextResponse.json(

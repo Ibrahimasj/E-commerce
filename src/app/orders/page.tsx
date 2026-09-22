@@ -11,33 +11,109 @@ import {
   CheckCircle2,
   Clock,
   MapPin,
-  ExternalLink,
-  ShieldCheck,
   AlertCircle,
   ArrowRight,
   Receipt,
+  User,
+  ShoppingBag,
+  Loader2,
+  CreditCard,
 } from 'lucide-react';
+import Script from 'next/script';
+import { useAuth } from '@/context/AuthContext';
 import { Order } from '@/types';
 import { formatRupiah, formatDateIndo } from '@/lib/utils';
 
 function OrdersContent() {
   const searchParams = useSearchParams();
+  const { user, isLoading: authLoading } = useAuth();
+
   const [invoiceQuery, setInvoiceQuery] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loadingSearch, setLoadingSearch] = useState(false);
   const [searchedOrder, setSearchedOrder] = useState<Order | null>(null);
   const [notFoundError, setNotFoundError] = useState(false);
-  const [savedOrders, setSavedOrders] = useState<any[]>([]);
+
+  const [userOrders, setUserOrders] = useState<Order[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(false);
+  const [payingOrderId, setPayingOrderId] = useState<string | null>(null);
+
+  // Ambil daftar pesanan dari GET /api/orders saat user login
+  const fetchUserOrders = async () => {
+    if (!user) return;
+    setLoadingOrders(true);
+    try {
+      const res = await fetch('/api/orders?t=' + Date.now());
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data)) {
+        setUserOrders(json.data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch user orders from /api/orders:', err);
+    } finally {
+      setLoadingOrders(false);
+    }
+  };
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('nusamart_my_orders');
-      if (stored) {
-        setSavedOrders(JSON.parse(stored));
-      }
-    } catch (e) {
-      console.error(e);
+    if (!authLoading && user) {
+      fetchUserOrders();
     }
+  }, [user, authLoading]);
 
+  // Handler pembayaran Midtrans Snap
+  const handlePayNow = async (orderId: string, invoiceNumber?: string) => {
+    setPayingOrderId(orderId);
+    try {
+      const res = await fetch('/api/payment/create-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId }),
+      });
+      const json = await res.json();
+
+      if (
+        json.success &&
+        json.token &&
+        typeof window !== 'undefined' &&
+        (window as any).snap
+      ) {
+        (window as any).snap.pay(json.token, {
+          onSuccess: (result: any) => {
+            console.log('Payment success:', result);
+            fetchUserOrders();
+            if (invoiceNumber) fetchOrder(invoiceNumber);
+            else fetchOrder(orderId);
+            setPayingOrderId(null);
+          },
+          onPending: (result: any) => {
+            console.log('Payment pending:', result);
+            fetchUserOrders();
+            if (invoiceNumber) fetchOrder(invoiceNumber);
+            else fetchOrder(orderId);
+            setPayingOrderId(null);
+          },
+          onError: (err: any) => {
+            console.error('Payment error:', err);
+            setPayingOrderId(null);
+          },
+          onClose: () => {
+            console.log('Payment modal closed');
+            setPayingOrderId(null);
+          },
+        });
+      } else {
+        alert(json.message || 'Gagal memanggil popup pembayaran Midtrans.');
+        setPayingOrderId(null);
+      }
+    } catch (err) {
+      console.error('Error initiating payment:', err);
+      alert('Terjadi kesalahan saat memproses pembayaran.');
+      setPayingOrderId(null);
+    }
+  };
+
+  // Handle URL query parameter ?invoice=... atau ?id=...
+  useEffect(() => {
     const queryParam = searchParams.get('invoice') || searchParams.get('id');
     if (queryParam) {
       setInvoiceQuery(queryParam);
@@ -47,7 +123,7 @@ function OrdersContent() {
 
   const fetchOrder = async (query: string) => {
     if (!query.trim()) return;
-    setLoading(true);
+    setLoadingSearch(true);
     setNotFoundError(false);
     setSearchedOrder(null);
 
@@ -63,7 +139,7 @@ function OrdersContent() {
       console.error(err);
       setNotFoundError(true);
     } finally {
-      setLoading(false);
+      setLoadingSearch(false);
     }
   };
 
@@ -101,13 +177,19 @@ function OrdersContent() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14">
+      {/* Midtrans Snap JS Script */}
+      <Script
+        src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
+        strategy="lazyOnload"
+      />
       {/* Header */}
       <div className="text-center max-w-xl mx-auto mb-10">
         <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto mb-3">
           <Truck className="w-6 h-6" />
         </div>
         <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-          Lacak Status Pesanan & Pengiriman
+          Lacak Status & Riwayat Pesanan
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
           Ketahui status konfirmasi pembayaran dan posisi pengiriman pesanan Anda secara real-time.
@@ -127,50 +209,14 @@ function OrdersContent() {
           </div>
           <button
             type="submit"
-            disabled={loading}
-            className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-lg shadow-emerald-600/20 transition-all active:scale-95"
+            disabled={loadingSearch}
+            className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-lg shadow-emerald-600/20 transition-all active:scale-95 flex items-center gap-1.5"
           >
-            {loading ? 'Mencari...' : 'Lacak'}
+            {loadingSearch ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+            <span>{loadingSearch ? 'Mencari...' : 'Lacak'}</span>
           </button>
         </form>
       </div>
-
-      {/* Saved Orders Quick Pills (from LocalStorage) */}
-      {savedOrders.length > 0 && !searchedOrder && (
-        <div className="mb-10 p-5 bg-white rounded-3xl border border-slate-200/80 shadow-xs">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-1.5">
-            <Clock className="w-4 h-4 text-emerald-600" />
-            Riwayat Pesanan Anda di Browser Ini:
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            {savedOrders.map((ord, idx) => (
-              <button
-                key={idx}
-                onClick={() => {
-                  setInvoiceQuery(ord.invoiceNumber || ord.id);
-                  fetchOrder(ord.invoiceNumber || ord.id);
-                }}
-                className="flex items-center justify-between p-3 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/40 text-left transition-all group"
-              >
-                <div>
-                  <span className="font-mono font-bold text-xs text-slate-900 group-hover:text-emerald-700 block">
-                    {ord.invoiceNumber}
-                  </span>
-                  <span className="text-[11px] text-slate-400">
-                    {ord.createdAt ? formatDateIndo(ord.createdAt) : 'Pesanan Terbaru'}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-slate-800">
-                    {formatRupiah(ord.total || 0)}
-                  </span>
-                  <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transition-transform group-hover:translate-x-0.5" />
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Not Found State */}
       {notFoundError && (
@@ -180,19 +226,12 @@ function OrdersContent() {
           <p className="text-xs text-slate-500 mt-1 mb-4">
             Pastikan nomor invoice atau ID pesanan yang Anda masukkan sudah benar (Contoh: INV-20260922-1386).
           </p>
-          <Link
-            href="/admin"
-            className="text-xs font-bold text-emerald-600 hover:underline"
-          >
-            Cek daftar seluruh pesanan di Dashboard Admin →
-          </Link>
         </div>
       )}
 
-      {/* Searched Order Details */}
+      {/* Searched Order Live Tracking Detail Card */}
       {searchedOrder && (
-        <div className="space-y-6 animate-in fade-in duration-300">
-          {/* Order Banner & Status Header */}
+        <div className="mb-12 space-y-6 animate-in fade-in duration-300">
           <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-xs">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
               <div>
@@ -225,7 +264,6 @@ function OrdersContent() {
               </h4>
 
               <div className="relative">
-                {/* Horizontal Progress Bar Line (Desktop) */}
                 <div className="hidden sm:block absolute top-5 left-8 right-8 h-1 bg-slate-200 -z-0">
                   <div
                     className="h-1 bg-emerald-600 transition-all duration-500"
@@ -287,22 +325,43 @@ function OrdersContent() {
                     Status Pengiriman: {searchedOrder.orderStatus.replace('_', ' ').toUpperCase()}
                   </span>
                   <span className="text-emerald-800 text-[11px]">
-                    Dikirim menggunakan <strong>{searchedOrder.shipping.name}</strong> ({searchedOrder.shipping.etd})
+                    Dikirim menggunakan <strong>{searchedOrder.shipping?.name || 'Kurir Reguler'}</strong> ({searchedOrder.shipping?.etd || '1-3 hari'})
                   </span>
                 </div>
               </div>
 
-              <div className="sm:text-right">
-                <span className="text-[11px] text-emerald-700 block">Status Pembayaran:</span>
-                <span
-                  className={`inline-block px-2.5 py-0.5 rounded-full font-bold text-[10px] uppercase ${
-                    searchedOrder.payment.status === 'paid'
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-amber-500 text-white'
-                  }`}
-                >
-                  {searchedOrder.payment.status === 'paid' ? 'Lunas / Terverifikasi' : 'Belum Dibayar'}
-                </span>
+              <div className="flex sm:flex-col items-center sm:items-end justify-between gap-2">
+                <div className="sm:text-right">
+                  <span className="text-[11px] text-emerald-700 block">Status Pembayaran:</span>
+                  <span
+                    className={`inline-block px-2.5 py-0.5 rounded-full font-bold text-[10px] uppercase ${
+                      searchedOrder.payment.status === 'paid'
+                        ? 'bg-emerald-600 text-white'
+                        : 'bg-amber-500 text-white'
+                    }`}
+                  >
+                    {searchedOrder.payment.status === 'paid' ? 'Lunas / Terverifikasi' : 'Belum Dibayar'}
+                  </span>
+                </div>
+                {searchedOrder.payment.status !== 'paid' && (
+                  <button
+                    onClick={() => handlePayNow(searchedOrder.id, searchedOrder.invoiceNumber)}
+                    disabled={payingOrderId === searchedOrder.id}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 transition-all active:scale-95"
+                  >
+                    {payingOrderId === searchedOrder.id ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>Menghubungkan...</span>
+                      </>
+                    ) : (
+                      <>
+                        <CreditCard className="w-3.5 h-3.5" />
+                        <span>Bayar Sekarang</span>
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -338,10 +397,7 @@ function OrdersContent() {
                   Metode Pembayaran
                 </h4>
                 <p className="font-semibold text-slate-800">
-                  {searchedOrder.payment.method.name}
-                </p>
-                <p className="text-slate-400 text-[11px]">
-                  {searchedOrder.payment.method.provider}
+                  {searchedOrder.payment.method?.name || 'Metode Pembayaran'}
                 </p>
               </div>
             </div>
@@ -358,7 +414,7 @@ function OrdersContent() {
                   <div key={product.id} className="py-2.5 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2.5 min-w-0">
                       <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-200">
-                        <Image src={product.image} alt={product.name} fill className="object-cover" />
+                        <Image src={product.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80'} alt={product.name} fill className="object-cover" />
                       </div>
                       <div className="min-w-0">
                         <div className="font-bold text-slate-900 line-clamp-1">
@@ -390,7 +446,7 @@ function OrdersContent() {
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span>Ongkos Kirim ({searchedOrder.shipping.courier})</span>
+                  <span>Ongkos Kirim ({searchedOrder.shipping?.courier || 'Kurir'})</span>
                   <span className="font-semibold text-slate-900">
                     {formatRupiah(searchedOrder.pricing.shippingCost)}
                   </span>
@@ -406,13 +462,212 @@ function OrdersContent() {
           </div>
         </div>
       )}
+
+      {/* ======================================================= */}
+      {/* Riwayat Pesanan User dari GET /api/orders (Prisma DB)   */}
+      {/* ======================================================= */}
+      <div className="mt-8">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <Clock className="w-5 h-5 text-emerald-600" />
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900">
+              Riwayat Pesanan Anda (Database Prisma)
+            </h2>
+          </div>
+          {user && (
+            <span className="text-xs font-semibold text-slate-500">
+              {userOrders.length} Pesanan Terdaftar
+            </span>
+          )}
+        </div>
+
+        {!authLoading && !user ? (
+          <div className="bg-white rounded-3xl border border-slate-200/80 p-8 text-center shadow-xs">
+            <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center mx-auto mb-3">
+              <User className="w-6 h-6" />
+            </div>
+            <h3 className="text-base font-bold text-slate-900 mb-1">
+              Masuk ke Akun Anda
+            </h3>
+            <p className="text-xs text-slate-500 max-w-md mx-auto mb-5">
+              Masuk untuk melihat seluruh riwayat pesanan yang pernah Anda buat di NusaMart secara terpusat.
+            </p>
+            <Link
+              href="/login?redirect=/orders"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 transition-all"
+            >
+              <span>Masuk Sekarang</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        ) : loadingOrders ? (
+          <div className="py-12 text-center text-slate-400 flex items-center justify-center gap-2 text-xs">
+            <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
+            <span>Memuat data pesanan dari database...</span>
+          </div>
+        ) : userOrders.length === 0 ? (
+          <div className="bg-white rounded-3xl border border-slate-200/80 p-8 text-center shadow-xs">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3">
+              <ShoppingBag className="w-6 h-6" />
+            </div>
+            <h3 className="text-base font-bold text-slate-900 mb-1">
+              Belum Ada Pesanan
+            </h3>
+            <p className="text-xs text-slate-500 max-w-md mx-auto mb-5">
+              Anda belum pernah melakukan pemesanan. Yuk, temukan produk terbaik di katalog toko kami!
+            </p>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 transition-all"
+            >
+              <span>Mulai Belanja</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {userOrders.map((ord) => {
+              const isPaid = ord.payment.status === 'paid';
+              return (
+                <div
+                  key={ord.id}
+                  className="bg-white rounded-3xl border border-slate-200/80 p-5 sm:p-6 shadow-xs hover:border-emerald-500/40 transition-all"
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <span className="font-mono font-black text-sm text-slate-900">
+                        {ord.invoiceNumber}
+                      </span>
+                      <span className="text-[11px] text-slate-400">
+                        • {formatDateIndo(ord.createdAt)}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                          ord.orderStatus === 'selesai'
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : ord.orderStatus === 'dikirim'
+                            ? 'bg-indigo-100 text-indigo-800'
+                            : ord.orderStatus === 'diproses'
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-amber-100 text-amber-800'
+                        }`}
+                      >
+                        {ord.orderStatus.replace('_', ' ')}
+                      </span>
+
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          isPaid
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                            : 'bg-amber-50 text-amber-700 border border-amber-200'
+                        }`}
+                      >
+                        {isPaid ? 'LUNAS' : 'MENUNGGU BAYAR'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Items preview */}
+                  <div className="py-4 divide-y divide-slate-100">
+                    {ord.items.map(({ product, quantity }) => (
+                      <div
+                        key={product.id}
+                        className="py-2.5 flex items-center justify-between gap-3"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="relative w-11 h-11 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-200">
+                            <Image
+                              src={product.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80'}
+                              alt={product.name}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                          <div className="min-w-0">
+                            <h4 className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-1">
+                              {product.name}
+                            </h4>
+                            <p className="text-[11px] text-slate-500 mt-0.5">
+                              {quantity} barang x {formatRupiah(product.price)}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="text-right flex-shrink-0">
+                          <span className="text-xs sm:text-sm font-bold text-slate-900">
+                            {formatRupiah(product.price * quantity)}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Footer & Actions */}
+                  <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="text-xs">
+                      <span className="text-slate-500">Total Pembayaran: </span>
+                      <span className="font-black text-slate-900 text-sm sm:text-base ml-1">
+                        {formatRupiah(ord.pricing.total)}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {!isPaid && (
+                        <button
+                          onClick={() => handlePayNow(ord.id, ord.invoiceNumber)}
+                          disabled={payingOrderId === ord.id}
+                          className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 active:scale-95"
+                        >
+                          {payingOrderId === ord.id ? (
+                            <>
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              <span>Menghubungkan...</span>
+                            </>
+                          ) : (
+                            <>
+                              <CreditCard className="w-3.5 h-3.5" />
+                              <span>Bayar Sekarang</span>
+                            </>
+                          )}
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() => {
+                          setInvoiceQuery(ord.invoiceNumber);
+                          setSearchedOrder(ord);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className="px-3.5 py-1.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 text-xs font-bold text-slate-700 hover:text-emerald-700 transition-colors"
+                      >
+                        Lacak Pengiriman
+                      </button>
+
+                      <Link
+                        href={`/order-success/${ord.id}`}
+                        className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors flex items-center gap-1"
+                      >
+                        <span>Detail & Faktur</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
 export default function OrdersPage() {
   return (
-    <Suspense fallback={<div className="py-16 text-center text-slate-400">Memuat status pesanan...</div>}>
+    <Suspense fallback={<div className="py-16 text-center text-slate-400">Memuat riwayat pesanan...</div>}>
       <OrdersContent />
     </Suspense>
   );

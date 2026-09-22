@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createUser } from '@/lib/auth';
+import { createUser, generateToken, COOKIE_NAME } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,15 +23,22 @@ export async function POST(request: NextRequest) {
     const newUser = await createUser({
       name: name.trim(),
       email: email.trim().toLowerCase(),
-      passwordHash: password,
-      role: 'customer',
+      password,
+      role: 'CUSTOMER',
       phone: phone?.trim() || '',
       address: address?.trim() || '',
-      city: city?.trim() || 'Jakarta',
+      city: city?.trim() || 'Jakarta Selatan',
       postalCode: postalCode?.trim() || '12340',
     });
 
-    return NextResponse.json(
+    const token = generateToken({
+      id: newUser.id,
+      email: newUser.email,
+      name: newUser.name,
+      role: newUser.role,
+    });
+
+    const response = NextResponse.json(
       {
         success: true,
         message: 'Pendaftaran akun berhasil!',
@@ -39,6 +46,16 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
+
+    response.cookies.set(COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7 hari
+      path: '/',
+    });
+
+    return response;
   } catch (error: any) {
     console.error('Register error:', error);
     return NextResponse.json(

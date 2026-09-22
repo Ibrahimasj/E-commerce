@@ -24,7 +24,7 @@ interface AuthContextType {
       postalCode?: string;
     }
   ) => Promise<{ success: boolean; message: string; user?: User }>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,18 +33,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load session user from localStorage
+  // Verifikasi sesi aktif via cookie JWT (/api/auth/me) atau fallback ke localStorage
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('nusamart_session_user');
-      if (stored) {
-        setUser(JSON.parse(stored));
+    let isMounted = true;
+
+    async function checkAuth() {
+      try {
+        const res = await fetch('/api/auth/me');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.user && isMounted) {
+            setUser(data.user);
+            localStorage.setItem('nusamart_session_user', JSON.stringify(data.user));
+            return;
+          }
+        }
+        // Fallback localStorage jika belum ada cookie
+        const stored = localStorage.getItem('nusamart_session_user');
+        if (stored && isMounted) {
+          setUser(JSON.parse(stored));
+        }
+      } catch (e) {
+        console.error('Failed to load session user:', e);
+        const stored = localStorage.getItem('nusamart_session_user');
+        if (stored && isMounted) {
+          setUser(JSON.parse(stored));
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
-    } catch (e) {
-      console.error('Failed to load session user:', e);
-    } finally {
-      setIsLoading(false);
     }
+
+    checkAuth();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const login = async (
@@ -113,12 +139,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     setUser(null);
     try {
       localStorage.removeItem('nusamart_session_user');
+      await fetch('/api/auth/logout', { method: 'POST' });
     } catch (e) {
-      console.error(e);
+      console.error('Logout error:', e);
     }
   };
 

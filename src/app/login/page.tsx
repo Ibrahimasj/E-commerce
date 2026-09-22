@@ -29,6 +29,7 @@ export default function LoginPage() {
 
     const res = await login(email, password, 'customer');
     if (res.success) {
+      router.refresh();
       router.push('/user/dashboard');
     } else {
       setErrorMsg(res.message);
@@ -44,6 +45,7 @@ export default function LoginPage() {
 
     const res = await login('budi@gmail.com', 'user123', 'customer');
     if (res.success) {
+      router.refresh();
       router.push('/user/dashboard');
     } else {
       setErrorMsg(res.message);

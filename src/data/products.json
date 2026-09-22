@@ -1,5 +1,24 @@
 [
   {
+    "id": "prod-1790089008649",
+    "name": "Airpods",
+    "slug": "airpods",
+    "category": "Elektronik",
+    "price": 150000,
+    "originalPrice": 450000,
+    "discount": 15,
+    "rating": 5,
+    "reviewsCount": 1,
+    "stock": 15,
+    "image": "https://images.unsplash.com/photo-1588156979435-379b9d365296?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "images": [
+      "https://images.unsplash.com/photo-1588156979435-379b9d365296?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    ],
+    "description": "Airpods Pro Terbaru",
+    "badge": "Baru",
+    "featured": false
+  },
+  {
     "id": "prod-1",
     "name": "Smartwatch Pro Ultra 2 AMOLED",
     "slug": "smartwatch-pro-ultra-2-amoled",

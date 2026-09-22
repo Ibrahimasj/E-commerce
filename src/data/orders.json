@@ -1,5 +1,332 @@
 [
   {
+    "id": "ord-1790090311947",
+    "invoiceNumber": "INV-20260922-5523",
+    "createdAt": "2026-09-22T15:18:31.969Z",
+    "customer": {
+      "userId": "usr-1790085447070",
+      "fullName": "Jan",
+      "phone": "08589076",
+      "email": "jan@gmail.com",
+      "address": "jl.apaan",
+      "city": "Jakarta Selatan",
+      "postalCode": "12340",
+      "notes": ""
+    },
+    "items": [
+      {
+        "product": {
+          "id": "prod-1790089008649",
+          "name": "Airpods",
+          "slug": "airpods",
+          "category": "Elektronik",
+          "price": 150000,
+          "originalPrice": 450000,
+          "discount": 15,
+          "rating": 5,
+          "reviewsCount": 1,
+          "stock": 15,
+          "image": "https://images.unsplash.com/photo-1588156979435-379b9d365296?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          "images": [
+            "https://images.unsplash.com/photo-1588156979435-379b9d365296?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          ],
+          "description": "Airpods Pro Terbaru",
+          "badge": "Baru",
+          "featured": false
+        },
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "id": "ship-jne-reg",
+      "name": "JNE Reguler",
+      "courier": "JNE",
+      "service": "Reguler",
+      "etd": "2-3 Hari Kerja",
+      "cost": 18000
+    },
+    "payment": {
+      "method": {
+        "id": "pay-va-bca",
+        "name": "BCA Virtual Account",
+        "type": "va",
+        "provider": "Bank Central Asia",
+        "accountNumber": "8277 0812 8899 1234",
+        "accountName": "NusaMart E-Commerce",
+        "instructions": [
+          "Buka aplikasi BCA Mobile / KlikBCA / ATM BCA.",
+          "Pilih menu Transfer > Ke Virtual Account.",
+          "Masukkan nomor Virtual Account: 8277 0812 8899 1234.",
+          "Pastikan nama penerima \"NusaMart E-Commerce\" dan nominal sesuai.",
+          "Masukkan PIN atau respon Appli Token Anda untuk menyelesaikan transaksi."
+        ]
+      },
+      "status": "pending"
+    },
+    "pricing": {
+      "subtotal": 150000,
+      "shippingCost": 18000,
+      "discountAmount": 0,
+      "total": 168000
+    },
+    "orderStatus": "menunggu_pembayaran"
+  },
+  {
+    "id": "test-order-1790089924089",
+    "invoiceNumber": "INV-TEST-5578",
+    "createdAt": "2026-09-22T15:12:05.578Z",
+    "customer": {
+      "fullName": "Budi Santoso",
+      "email": "admin@nusamart.com",
+      "phone": "08129876543",
+      "address": "Jl. Uji Coba Midtrans No. 10",
+      "city": "Jakarta",
+      "postalCode": "12340"
+    },
+    "items": [
+      {
+        "product": {
+          "id": "prod-1",
+          "name": "Smartwatch Pro Ultra 2 AMOLED",
+          "price": 150000,
+          "category": "Gadget",
+          "stock": 10,
+          "image": "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=800&q=80"
+        },
+        "quantity": 1,
+        "selectedVariant": "Default"
+      }
+    ],
+    "shipping": {
+      "id": "reg",
+      "name": "Reguler",
+      "courier": "JNE",
+      "service": "REG",
+      "cost": 0,
+      "etd": "2-3 hari"
+    },
+    "payment": {
+      "method": {
+        "id": "midtrans",
+        "name": "Midtrans (QRIS)",
+        "type": "qris"
+      },
+      "status": "paid",
+      "paidAt": "2026-09-22T15:14:25.393Z"
+    },
+    "pricing": {
+      "subtotal": 150000,
+      "shippingCost": 0,
+      "discountAmount": 0,
+      "total": 150000
+    },
+    "orderStatus": "diproses"
+  },
+  {
+    "id": "ord-1790088083667",
+    "invoiceNumber": "INV-20260922-6993",
+    "createdAt": "2026-09-22T14:41:23.677Z",
+    "customer": {
+      "userId": "cmucrxch60000n1msccwhk3dr",
+      "fullName": "matt",
+      "phone": "01364892",
+      "email": "matt67@gmail.com",
+      "address": "desa tirta laga",
+      "city": "Jakarta Selatan",
+      "postalCode": "12340",
+      "notes": ""
+    },
+    "items": [
+      {
+        "product": {
+          "id": "prod-6",
+          "name": "charger U GREEN 20w",
+          "slug": "tws-earbuds-hi-fi-bass-low-latency",
+          "category": "Elektronik",
+          "price": 200000,
+          "originalPrice": 450000,
+          "discount": 33,
+          "rating": 4.8,
+          "reviewsCount": 380,
+          "stock": 20,
+          "image": "https://down-id.img.susercontent.com/file/id-11134207-7ra0q-md38a3k2bms814",
+          "images": [
+            "https://down-id.img.susercontent.com/file/id-11134207-7ra0q-md38a3k2bms814"
+          ],
+          "description": "charger iphone 20wat fast charging",
+          "specs": {
+            "Bluetooth": "Versi 5.4 Jangkauan 15 Meter",
+            "Baterai": "6 Jam Earbuds + 26 Jam Charging Case",
+            "Latensi": "38ms Ultra Low Latency Gaming Mode",
+            "Sertifikasi": "IPX5 Tahan Keringat & Percikan Air"
+          },
+          "badge": "Diskon Besar",
+          "featured": false
+        },
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "id": "ship-jne-reg",
+      "name": "JNE Reguler",
+      "courier": "JNE",
+      "service": "Reguler",
+      "etd": "2-3 Hari Kerja",
+      "cost": 18000
+    },
+    "payment": {
+      "method": {
+        "id": "pay-cod",
+        "name": "COD (Bayar Tunai di Tempat)",
+        "type": "cod",
+        "provider": "Kurir Rekanan",
+        "instructions": [
+          "Siapkan uang pas sesuai total tagihan saat kurir tiba di lokasi.",
+          "Pastikan nomor handphone dan WhatsApp aktif untuk konfirmasi kurir.",
+          "Buka paket dan cek kelengkapan setelah pembayaran diserahkan ke kurir."
+        ]
+      },
+      "status": "paid",
+      "paidAt": "2026-09-22T14:42:01.211Z"
+    },
+    "pricing": {
+      "subtotal": 200000,
+      "shippingCost": 18000,
+      "discountAmount": 0,
+      "total": 218000
+    },
+    "orderStatus": "dikirim"
+  },
+  {
+    "id": "ord-1790087898836",
+    "invoiceNumber": "INV-20260922-2513",
+    "createdAt": "2026-09-22T14:38:18.957Z",
+    "customer": {
+      "userId": "usr-admin-1",
+      "fullName": "Budi Santoso",
+      "phone": "081234567890",
+      "email": "admin@nusamart.com",
+      "address": "Jl. Sudirman 10",
+      "city": "Jakarta Selatan",
+      "postalCode": "12340",
+      "notes": ""
+    },
+    "items": [
+      {
+        "product": {
+          "id": "prod-1",
+          "name": "Smartwatch Pro Ultra 2 AMOLED",
+          "price": 899000,
+          "stock": 35,
+          "image": "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=800&q=80"
+        },
+        "quantity": 2
+      }
+    ],
+    "shipping": {
+      "id": "ship-1",
+      "name": "JNE",
+      "courier": "JNE",
+      "service": "REG",
+      "etd": "1-2 hari",
+      "cost": 10000
+    },
+    "payment": {
+      "method": {
+        "id": "pay-1",
+        "name": "QRIS",
+        "type": "qris",
+        "provider": "QRIS",
+        "instructions": []
+      },
+      "status": "pending"
+    },
+    "pricing": {
+      "subtotal": 1798000,
+      "shippingCost": 10000,
+      "discountAmount": 0,
+      "total": 1808000
+    },
+    "orderStatus": "menunggu_pembayaran"
+  },
+  {
+    "id": "ord-1790085475216",
+    "invoiceNumber": "INV-20260922-1652",
+    "createdAt": "2026-09-22T13:57:55.216Z",
+    "customer": {
+      "userId": "usr-1790085447070",
+      "fullName": "Jan",
+      "phone": "08589076",
+      "email": "jan@gmail.com",
+      "address": "jl.apaan",
+      "city": "Jakarta Selatan",
+      "postalCode": "12340",
+      "notes": ""
+    },
+    "items": [
+      {
+        "product": {
+          "id": "prod-5",
+          "name": "Kacamata Anti Radiasi Blue Light Pro",
+          "slug": "fast-gan-charger-65w-3-port-usb-c",
+          "category": "Fashion",
+          "price": 179000,
+          "originalPrice": 320000,
+          "discount": 25,
+          "rating": 4.9,
+          "reviewsCount": 420,
+          "stock": 50,
+          "image": "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800&q=80",
+          "images": [
+            "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800&q=80"
+          ],
+          "description": "Kacamata dengan lensa anti blue-light khusus untuk mengurangi kelelahan mata saat menatap layar komputer dan gadget seharian.",
+          "specs": {
+            "Output": "Max 65W Power Delivery 3.0 & Quick Charge 4+",
+            "Port": "2x USB-C + 1x USB-A",
+            "Proteksi": "Overheat, Overcharge, Short Circuit Protection",
+            "Kompatibilitas": "MacBook, Dell, iPhone, Samsung, Xiaomi"
+          },
+          "badge": "Terlaris",
+          "featured": true
+        },
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "id": "ship-gosend-instant",
+      "name": "GoSend Instant",
+      "courier": "GoSend",
+      "service": "Instant (Max 3 Jam)",
+      "etd": "Hari Ini (3 Jam)",
+      "cost": 35000
+    },
+    "payment": {
+      "method": {
+        "id": "pay-qris",
+        "name": "QRIS (GoPay, OVO, Dana, ShopeePay, BCA)",
+        "type": "qris",
+        "provider": "QRIS Bersama",
+        "instructions": [
+          "Buka aplikasi e-wallet atau mobile banking favorit Anda.",
+          "Pilih menu Scan / Bayar QRIS.",
+          "Arahkan kamera ke kode QR yang ditampilkan pada layar.",
+          "Periksa nominal pembayaran dan konfirmasi dengan PIN Anda.",
+          "Status pembayaran akan terverifikasi secara otomatis."
+        ]
+      },
+      "status": "paid",
+      "paidAt": "2026-09-22T13:59:00.134Z"
+    },
+    "pricing": {
+      "subtotal": 179000,
+      "shippingCost": 35000,
+      "discountAmount": 0,
+      "total": 214000
+    },
+    "orderStatus": "selesai"
+  },
+  {
     "id": "ord-1790015867697",
     "invoiceNumber": "INV-20260922-1388",
     "createdAt": "2026-09-21T18:37:47.697Z",

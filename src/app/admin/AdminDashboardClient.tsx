@@ -20,6 +20,9 @@ import {
   LogOut,
   ShieldCheck,
   RefreshCw,
+  Edit3,
+  Trash2,
+  X,
 } from 'lucide-react';
 import { Order, Product } from '@/types';
 import { formatRupiah, formatDateIndo } from '@/lib/utils';
@@ -49,7 +52,7 @@ export default function AdminDashboardClient({
     setIsRefreshing(true);
     try {
       const [resOrders, resProducts] = await Promise.all([
-        fetch('/api/orders?t=' + Date.now(), { cache: 'no-store' }),
+        fetch('/api/admin/orders?t=' + Date.now(), { cache: 'no-store' }),
         fetch('/api/products?t=' + Date.now(), { cache: 'no-store' }),
       ]);
       const jsonOrders = await resOrders.json();
@@ -102,13 +105,94 @@ export default function AdminDashboardClient({
   const [isSubmittingProduct, setIsSubmittingProduct] = useState(false);
   const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
 
+  // Edit product state
+  const [editingProduct, setEditingProduct] = useState<{
+    id: string;
+    name: string;
+    category: string;
+    price: string;
+    originalPrice: string;
+    stock: string;
+    image: string;
+    description: string;
+  } | null>(null);
+  const [isSubmittingEdit, setIsSubmittingEdit] = useState(false);
+  const [isDeletingProduct, setIsDeletingProduct] = useState<string | null>(null);
+
+  const handleOpenEditProduct = (p: Product) => {
+    setEditingProduct({
+      id: p.id,
+      name: p.name,
+      category: p.category,
+      price: String(p.price),
+      originalPrice: p.originalPrice ? String(p.originalPrice) : '',
+      stock: String(p.stock),
+      image: p.image,
+      description: p.description || '',
+    });
+  };
+
+  const handleUpdateProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingProduct) return;
+    setIsSubmittingEdit(true);
+
+    try {
+      const res = await fetch(`/api/admin/products/${editingProduct.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editingProduct),
+      });
+
+      const json = await res.json();
+      if (json.success && json.data) {
+        setProducts((prev) =>
+          prev.map((p) => (p.id === editingProduct.id ? json.data : p))
+        );
+        setEditingProduct(null);
+      } else {
+        alert(json.message || 'Gagal memperbarui produk');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Terjadi kesalahan saat memperbarui produk.');
+    } finally {
+      setIsSubmittingEdit(false);
+    }
+  };
+
+  const handleDeleteProduct = async (productId: string, productName: string) => {
+    if (!window.confirm(`Apakah Anda yakin ingin menghapus produk "${productName}"?`)) {
+      return;
+    }
+
+    setIsDeletingProduct(productId);
+    try {
+      const res = await fetch(`/api/admin/products/${productId}`, {
+        method: 'DELETE',
+      });
+
+      const json = await res.json();
+      if (json.success) {
+        setProducts((prev) => prev.filter((p) => p.id !== productId));
+      } else {
+        alert(json.message || 'Gagal menghapus produk');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Terjadi kesalahan saat menghapus produk.');
+    } finally {
+      setIsDeletingProduct(null);
+    }
+  };
+
   const handleUpdateOrderStatus = async (
     orderId: string,
     newStatus: 'menunggu_pembayaran' | 'diproses' | 'dikirim' | 'selesai'
   ) => {
     setUpdatingOrderId(orderId);
     try {
-      const res = await fetch(`/api/orders/${orderId}`, {
+      const res = await fetch(`/api/admin/orders/${orderId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderStatus: newStatus }),
@@ -133,7 +217,7 @@ export default function AdminDashboardClient({
   ) => {
     setUpdatingOrderId(orderId);
     try {
-      const res = await fetch(`/api/orders/${orderId}`, {
+      const res = await fetch(`/api/admin/orders/${orderId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ paymentStatus: newPaymentStatus }),
@@ -166,7 +250,7 @@ export default function AdminDashboardClient({
     setIsSubmittingProduct(true);
 
     try {
-      const res = await fetch('/api/products', {
+      const res = await fetch('/api/admin/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newProduct),
@@ -534,13 +618,34 @@ export default function AdminDashboardClient({
                       ⭐ {p.rating} ({p.reviewsCount})
                     </td>
                     <td className="p-4 whitespace-nowrap">
-                      <Link
-                        href={`/products/${p.id}`}
-                        className="text-emerald-600 hover:text-emerald-700 font-bold text-xs inline-flex items-center gap-1"
-                      >
-                        <span>Lihat di Toko</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </Link>
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href={`/products/${p.id}`}
+                          target="_blank"
+                          className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors inline-flex items-center gap-1 text-xs font-semibold"
+                          title="Lihat di Toko"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                          <span className="hidden md:inline">Lihat</span>
+                        </Link>
+                        <button
+                          onClick={() => handleOpenEditProduct(p)}
+                          className="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors inline-flex items-center gap-1 text-xs font-semibold"
+                          title="Edit Produk"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                          <span className="hidden md:inline">Edit</span>
+                        </button>
+                        <button
+                          onClick={() => handleDeleteProduct(p.id, p.name)}
+                          disabled={isDeletingProduct === p.id}
+                          className="p-1.5 text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded-lg transition-colors inline-flex items-center gap-1 text-xs font-semibold"
+                          title="Hapus Produk"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span className="hidden md:inline">{isDeletingProduct === p.id ? 'Menghapus...' : 'Hapus'}</span>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -668,6 +773,150 @@ export default function AdminDashboardClient({
                   className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md shadow-emerald-600/20"
                 >
                   {isSubmittingProduct ? 'Menyimpan...' : 'Simpan Produk'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      {/* Modal: Edit Produk */}
+      {editingProduct && (
+        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
+          <div
+            onClick={() => setEditingProduct(null)}
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"
+          />
+
+          <div className="relative bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl z-10 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-black text-slate-900">
+                Edit Data Produk
+              </h3>
+              <button
+                onClick={() => setEditingProduct(null)}
+                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <p className="text-xs text-slate-500 mb-6">
+              Perubahan pada nama, harga, kategori, stok, atau gambar akan langsung disimpan di database Prisma SQLite.
+            </p>
+
+            <form onSubmit={handleUpdateProduct} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Nama Produk *</label>
+                <input
+                  type="text"
+                  required
+                  value={editingProduct.name}
+                  onChange={(e) =>
+                    setEditingProduct({ ...editingProduct, name: e.target.value })
+                  }
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Kategori *</label>
+                  <select
+                    value={editingProduct.category}
+                    onChange={(e) =>
+                      setEditingProduct({ ...editingProduct, category: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none"
+                  >
+                    {CATEGORIES.filter((c) => c !== 'Semua').map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Stok Tersedia *</label>
+                  <input
+                    type="number"
+                    min="0"
+                    required
+                    value={editingProduct.stock}
+                    onChange={(e) =>
+                      setEditingProduct({ ...editingProduct, stock: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Harga Jual (Rp) *</label>
+                  <input
+                    type="number"
+                    required
+                    min="1"
+                    value={editingProduct.price}
+                    onChange={(e) =>
+                      setEditingProduct({ ...editingProduct, price: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Harga Coret Asli (Opsional)</label>
+                  <input
+                    type="number"
+                    value={editingProduct.originalPrice}
+                    onChange={(e) =>
+                      setEditingProduct({ ...editingProduct, originalPrice: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">URL Gambar Produk *</label>
+                <input
+                  type="url"
+                  required
+                  value={editingProduct.image}
+                  onChange={(e) =>
+                    setEditingProduct({ ...editingProduct, image: e.target.value })
+                  }
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Deskripsi Produk</label>
+                <textarea
+                  rows={3}
+                  value={editingProduct.description}
+                  onChange={(e) =>
+                    setEditingProduct({ ...editingProduct, description: e.target.value })
+                  }
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-emerald-500 outline-none"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setEditingProduct(null)}
+                  className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingEdit}
+                  className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md shadow-blue-600/20"
+                >
+                  {isSubmittingEdit ? 'Menyimpan...' : 'Simpan Perubahan'}
                 </button>
               </div>
             </form>

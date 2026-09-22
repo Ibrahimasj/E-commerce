@@ -21,18 +21,6 @@
     "createdAt": "2026-02-01T00:00:00.000Z"
   },
   {
-    "name": "Rina Wijaya",
-    "email": "testuser_1790014344116@example.com",
-    "passwordHash": "password123",
-    "role": "customer",
-    "phone": "085712345678",
-    "address": "Jl. Melati No. 10",
-    "city": "Bandung",
-    "postalCode": "40115",
-    "id": "usr-1790014344122",
-    "createdAt": "2026-09-21T18:12:24.122Z"
-  },
-  {
     "name": "komat",
     "email": "komat67@gmail.com",
     "passwordHash": "komat672",
@@ -43,5 +31,28 @@
     "postalCode": "12340",
     "id": "usr-1790014802935",
     "createdAt": "2026-09-21T18:20:02.935Z"
+  },
+  {
+    "name": "Jan",
+    "email": "jan@gmail.com",
+    "passwordHash": "jan672",
+    "role": "customer",
+    "phone": "08589076",
+    "address": "jl.apaan",
+    "city": "Jakarta Selatan",
+    "postalCode": "12340",
+    "id": "usr-1790085447070",
+    "createdAt": "2026-09-22T13:57:27.070Z"
+  },
+  {
+    "id": "cmucrxch60000n1msccwhk3dr",
+    "name": "matt",
+    "email": "matt67@gmail.com",
+    "role": "customer",
+    "phone": "01364892",
+    "address": "desa tirta laga",
+    "city": "Jakarta Selatan",
+    "postalCode": "12340",
+    "createdAt": "2026-09-22T14:32:59.715Z"
   }
 ]

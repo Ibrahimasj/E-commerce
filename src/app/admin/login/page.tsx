@@ -29,6 +29,7 @@ export default function AdminLoginPage() {
 
     const res = await login(email, password, 'admin');
     if (res.success) {
+      router.refresh();
       router.push('/admin');
     } else {
       setErrorMsg(res.message);
@@ -44,6 +45,7 @@ export default function AdminLoginPage() {
 
     const res = await login('admin@nusamart.com', 'admin123', 'admin');
     if (res.success) {
+      router.refresh();
       router.push('/admin');
     } else {
       setErrorMsg(res.message);
